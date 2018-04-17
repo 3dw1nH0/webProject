@@ -3,6 +3,7 @@ package ouhk.webProject.controller;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+import ouhk.webProject.dao.BidUserRepository;
+import ouhk.webProject.dao.GuestbookRepository;
 import ouhk.webProject.exception.AttachmentNotFound;
 import ouhk.webProject.exception.TicketNotFound;
 import ouhk.webProject.model.Attachment;
 import ouhk.webProject.model.Ticket;
+import ouhk.webProject.view.DownloadingView;
 import ouhk.webProject.service.AttachmentService;
 import ouhk.webProject.service.TicketService;
-import ouhk.webProject.view.DownloadingView;
 
 @Controller
 @RequestMapping("ticket")
@@ -32,37 +35,63 @@ public class TicketController {
     @Autowired
     private AttachmentService attachmentService;
 
+    @Resource
+    private GuestbookRepository guestbookRepo;
+
+    @Resource
+    private BidUserRepository bidUserEntryRepo;
+
     @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
     public String list(ModelMap model) {
         model.addAttribute("ticketDatabase", ticketService.getTickets());
         return "list";
     }
 
-    @RequestMapping(value = "create", method = RequestMethod.GET)
-    public ModelAndView create() {
-        return new ModelAndView("add", "ticketForm", new Form());
-    }
-
     public static class Form {
 
-        private String subject;
-        private String body;
+        private String userName;
+        private String status, winner, description;
+        private String expectedPrice;
         private List<MultipartFile> attachments;
 
-        public String getSubject() {
-            return subject;
+        public String getUserName() {
+            return userName;
         }
 
-        public void setSubject(String subject) {
-            this.subject = subject;
+        public void setUserName(String userName) {
+            this.userName = userName;
         }
 
-        public String getBody() {
-            return body;
+        public String getStatus() {
+            return status;
         }
 
-        public void setBody(String body) {
-            this.body = body;
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getWinner() {
+            return winner;
+        }
+
+        public void setWinner(String winner) {
+            this.winner = winner;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+       public String getExpectedPrice() {
+            return expectedPrice;
+        }
+
+        public void setExpectedPrice(String expectedPrice) {
+            this.expectedPrice = expectedPrice;
         }
 
         public List<MultipartFile> getAttachments() {
@@ -75,10 +104,17 @@ public class TicketController {
 
     }
 
+    @RequestMapping(value = "create", method = RequestMethod.GET)
+    public ModelAndView bidForm(ModelMap model, Principal principal ) {
+        model.addAttribute("owner", principal.getName()) ;
+        return new ModelAndView("addBidding", "bidForm", new Form());
+    }
+
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String create(Form form, Principal principal) throws IOException {
+    public String bidForm(Form form, Principal principal) throws IOException {
         long ticketId = ticketService.createTicket(principal.getName(),
-                form.getSubject(), form.getBody(), form.getAttachments());
+                form.getDescription(), form.getExpectedPrice(),form.getStatus(), form.getWinner(), 
+                form.getAttachments());
         return "redirect:/ticket/view/" + ticketId;
     }
 
@@ -108,6 +144,7 @@ public class TicketController {
         return new RedirectView("/ticket/list", true);
     }
 
+    
     @RequestMapping(value = "delete/{ticketId}", method = RequestMethod.GET)
     public String deleteTicket(@PathVariable("ticketId") long ticketId)
             throws TicketNotFound {
@@ -121,17 +158,20 @@ public class TicketController {
         Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket == null
                 || (!request.isUserInRole("ROLE_ADMIN")
-                && !principal.getName().equals(ticket.getCustomerName()))) {
+                && !principal.getName().equals(ticket.getUserName()))) {
             return new ModelAndView(new RedirectView("/ticket/list", true));
         }
-
+        
         ModelAndView modelAndView = new ModelAndView("edit");
         modelAndView.addObject("ticket", ticket);
 
-        Form ticketForm = new Form();
-        ticketForm.setSubject(ticket.getSubject());
-        ticketForm.setBody(ticket.getBody());
-        modelAndView.addObject("ticketForm", ticketForm);
+        Form bidForm = new Form();
+        bidForm.setUserName(ticket.getUserName());
+        bidForm.setDescription(ticket.getDescription());
+        bidForm.setExpectedPrice(ticket.getExpectedPrice());
+        bidForm.setStatus(ticket.getStatus());
+        bidForm.setWinner(ticket.getWinner());
+        modelAndView.addObject("bidForm", bidForm);
 
         return modelAndView;
     }
@@ -143,12 +183,12 @@ public class TicketController {
         Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket == null
                 || (!request.isUserInRole("ROLE_ADMIN")
-                && !principal.getName().equals(ticket.getCustomerName()))) {
+                && !principal.getName().equals(ticket.getUserName()))) {
             return new RedirectView("/ticket/list", true);
         }
 
-        ticketService.updateTicket(ticketId, form.getSubject(),
-                form.getBody(), form.getAttachments());
+        ticketService.updateTicket(ticketId, form.getDescription(),form.getExpectedPrice(),form.getStatus(), form.getWinner(),
+                form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }
 
@@ -161,5 +201,5 @@ public class TicketController {
         ticketService.deleteAttachment(ticketId, name);
         return "redirect:/ticket/edit/" + ticketId;
     }
-
+     
 }
