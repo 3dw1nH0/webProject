@@ -24,10 +24,12 @@
                 <c:forEach items="${ticketDatabase}" var="ticket">
                     Ticket ${ticket.id}:
                     <a href="<c:url value="/ticket/view/${ticket.id}" />">
-                        <c:out value="${ticket.subject}" /></a>
-                    (customer: <c:out value="${ticket.customerName}" />)
+                        <c:out value="${ticket.id}" /></a>
+                    (user: <c:out value="${ticket.userName}" />)
+                    (description: <c:out value="${ticket.description}" />)
+                    (status: <c:out value="${ticket.status}" />)
                     <security:authorize access="hasRole('ADMIN') or 
-                                        principal.username=='${ticket.customerName}'">
+                                        principal.username=='${ticket.userName}'">
                         [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]
                     </security:authorize>
                     <security:authorize access="hasRole('ADMIN')">            

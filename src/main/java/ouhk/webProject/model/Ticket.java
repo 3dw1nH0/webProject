@@ -11,20 +11,26 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+
+/**
+ *
+ * @author Edwin
+ */
 
 @Entity
+@Table(name = "ticket")
 public class Ticket implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
-    private String customerName;
+    @Column(name = "Owner")
+    private String userName;
 
-    private String subject;
-
-    private String body;
+    private String description, status, winner, expectedPrice;
 
     @OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,28 +44,44 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getBody() {
-        return body;
+    public String getStatus() {
+        return status;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
+    public String getExpectedPrice() {
+        return expectedPrice;
+    }
+
+    public void setExpectedPrice(String expectedPrice) {
+        this.expectedPrice = expectedPrice;
     }
 
     public List<Attachment> getAttachments() {
@@ -74,4 +96,5 @@ public class Ticket implements Serializable {
         attachment.setTicket(null);
         this.attachments.remove(attachment);
     }
+
 }

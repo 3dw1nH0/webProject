@@ -78,5 +78,5 @@ public class TicketUserController {
         ticketUserRepo.delete(ticketUserRepo.findOne(username));
         return new RedirectView("/user/list", true);
     }
-
+    
 }

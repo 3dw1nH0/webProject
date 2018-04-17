@@ -6,12 +6,12 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import ouhk.webProject.dao.AttachmentRepository;
-import ouhk.webProject.dao.TicketRepository;
 import ouhk.webProject.exception.AttachmentNotFound;
 import ouhk.webProject.exception.TicketNotFound;
 import ouhk.webProject.model.Attachment;
 import ouhk.webProject.model.Ticket;
+import ouhk.webProject.dao.AttachmentRepository;
+import ouhk.webProject.dao.TicketRepository;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -60,12 +60,15 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public long createTicket(String customerName, String subject,
-            String body, List<MultipartFile> attachments) throws IOException {
+    public long createTicket(String userName, String description,
+            String status, String winner, String expectedPrice, List<MultipartFile> attachments) throws IOException {
         Ticket ticket = new Ticket();
-        ticket.setCustomerName(customerName);
-        ticket.setSubject(subject);
-        ticket.setBody(body);
+        ticket.setUserName(userName);
+        ticket.setDescription(description);
+        ticket.setStatus(status);
+        ticket.setWinner(winner);
+        ticket.setExpectedPrice(expectedPrice);
+        
 
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
@@ -85,17 +88,19 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional(rollbackFor = TicketNotFound.class)
-    public void updateTicket(long id, String subject,
-            String body, List<MultipartFile> attachments)
+    public void updateTicket(long id, String description,
+            String status, String winner, String expectedPrice, List<MultipartFile> attachments)
             throws IOException, TicketNotFound {
         Ticket updatedTicket = ticketRepo.findOne(id);
         if (updatedTicket == null) {
             throw new TicketNotFound();
         }
 
-        updatedTicket.setSubject(subject);
-        updatedTicket.setBody(body);
-
+        updatedTicket.setDescription(description);
+        updatedTicket.setStatus(status);
+        updatedTicket.setExpectedPrice(expectedPrice);
+        updatedTicket.setWinner(winner);
+        
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
             attachment.setName(filePart.getOriginalFilename());

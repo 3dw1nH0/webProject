@@ -27,13 +27,11 @@ INSERT INTO users VALUES ('oliver', 'oliverpw');
 INSERT INTO user_roles(username, role) VALUES ('oliver', 'ROLE_USER');
 
 -- newTables for online bidding website
-CREATE TABLE item (
+CREATE TABLE ticket (
     id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     description VARCHAR(255) NOT NULL,
-    expectedPrice DECIMAL(5,2) NOT NULL,
+    expectedPrice VARCHAR(10) NOT NULL,
 	Owner VARCHAR(50) NOT NULL,
-	noOfbids VARCHAR(255) NOT NULL,
-	photo BLOB,
 	status VARCHAR(255),
 	winner VARCHAR(255) default null,
     PRIMARY KEY (id),
@@ -44,9 +42,9 @@ CREATE TABLE bidUser (
     id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     itemID INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
-	price DECIMAL(5,2),
+	price VARCHAR(10),
 	PRIMARY KEY (id),
-	FOREIGN KEY (itemID) REFERENCES item(id),
+	FOREIGN KEY (itemID) REFERENCES ticket(id),
         FOREIGN KEY (username) REFERENCES users(username)
 );
 
@@ -57,7 +55,18 @@ CREATE TABLE Guestbook (
 	message VARCHAR(200) default null,
 	date TIMESTAMP,
 	PRIMARY KEY (id),
-	FOREIGN KEY (itemID) REFERENCES item(id),
+	FOREIGN KEY (itemID) REFERENCES ticket(id),
 	FOREIGN KEY (name) REFERENCES users(username)	
 );
+
+CREATE TABLE attachment (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    filename VARCHAR(255) DEFAULT NULL,
+    content_type VARCHAR(255) DEFAULT NULL,
+    content BLOB DEFAULT NULL,
+    ticket_id INTEGER DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (ticket_id) REFERENCES ticket(id) 
+);
+
 
