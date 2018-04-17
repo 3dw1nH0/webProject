@@ -1,3 +1,10 @@
+drop table Attachment;
+drop table biduser;
+drop table guestbook;
+drop table ticket;
+drop table users;
+drop table user_roles;
+
 -- 2tables for user and user roles.
 CREATE TABLE users (
     username VARCHAR(50) NOT NULL,
