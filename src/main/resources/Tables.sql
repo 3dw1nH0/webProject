@@ -36,11 +36,11 @@ INSERT INTO user_roles(username, role) VALUES ('oliver', 'ROLE_USER');
 -- newTables for online bidding website
 CREATE TABLE ticket (
     id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    Owner VARCHAR(50) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    expectedPrice VARCHAR(10) NOT NULL,
-	Owner VARCHAR(50) NOT NULL,
-	status VARCHAR(255),
-	winner VARCHAR(255) default null,
+    price VARCHAR(10) NOT NULL,
+    status VARCHAR(255),
+    winner VARCHAR(255) default null,
     PRIMARY KEY (id),
 	FOREIGN KEY (Owner) REFERENCES users(username)
 );
