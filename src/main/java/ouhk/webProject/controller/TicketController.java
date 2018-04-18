@@ -3,6 +3,7 @@ package ouhk.webProject.controller;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import static javassist.CtMethod.ConstParameter.string;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import ouhk.webProject.exception.AttachmentNotFound;
 import ouhk.webProject.exception.TicketNotFound;
 import ouhk.webProject.model.Attachment;
 import ouhk.webProject.model.Ticket;
+import ouhk.webProject.model.bidUser;
 import ouhk.webProject.view.DownloadingView;
 import ouhk.webProject.service.AttachmentService;
 import ouhk.webProject.service.TicketService;
@@ -68,8 +70,6 @@ public class TicketController {
         public String getDescription() {
             return description;
         }
-
-      
 
         public List<MultipartFile> getAttachments() {
             return attachments;
@@ -132,6 +132,7 @@ public class TicketController {
             return "redirect:/ticket/list";
         }
         model.addAttribute("ticket", ticket);
+        model.addAttribute("bids", bidUserEntryRepo.findAll());
         return "view";
     }
 
@@ -206,6 +207,20 @@ public class TicketController {
             @PathVariable("attachment") String name) throws AttachmentNotFound {
         ticketService.deleteAttachment(ticketId, name);
         return "redirect:/ticket/edit/" + ticketId;
+    }
+    
+    @RequestMapping(value = "view/{ticketId}/bid", method = RequestMethod.GET)
+    public ModelAndView bid(@PathVariable("ticketId") long ticketId, ModelMap model, Principal principal) {
+        bidUser bid = new bidUser();
+        return new ModelAndView("bid","bidForm",  bid);
+    }
+    
+    @RequestMapping(value = "view/{ticketId}/bid", method = RequestMethod.POST)
+    public View bid(@PathVariable("ticketId") long ticketId, bidUser bid, Principal principal) {
+        bid.setItemID(ticketId);
+        bid.setUsername(principal.getName());
+        bidUserEntryRepo.save(bid);
+        return new RedirectView("/ticket/view/"+ticketId, true);
     }
      
 }

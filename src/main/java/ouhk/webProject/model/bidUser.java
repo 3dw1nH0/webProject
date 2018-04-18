@@ -21,7 +21,7 @@ public class bidUser implements Serializable{
     private Integer id;
     
     private String username, price;
-    private Integer itemID; 
+    private long itemID; 
 
     public Integer getId() {
         return id;
@@ -47,13 +47,12 @@ public class bidUser implements Serializable{
         this.price = price;
     }
 
-    
 
-    public Integer getItemID() {
+    public long getItemID() {
         return itemID;
     }
 
-    public void setItemID(Integer itemID) {
+    public void setItemID(long itemID) {
         this.itemID = itemID;
     }
     
