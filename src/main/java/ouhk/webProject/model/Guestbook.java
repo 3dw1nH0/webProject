@@ -21,7 +21,8 @@ public class Guestbook implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name, message, price, itemID;
+    private String name, message;
+    private long itemID;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
@@ -50,19 +51,11 @@ public class Guestbook implements Serializable {
         this.message = message;
     }
 
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getItemID() {
+    public long getItemID() {
         return itemID;
     }
 
-    public void setItemID(String itemID) {
+    public void setItemID(long itemID) {
         this.itemID = itemID;
     }
 

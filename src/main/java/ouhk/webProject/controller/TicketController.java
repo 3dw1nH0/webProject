@@ -2,6 +2,7 @@ package ouhk.webProject.controller;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import static javassist.CtMethod.ConstParameter.string;
 import javax.annotation.Resource;
@@ -21,6 +22,7 @@ import ouhk.webProject.dao.GuestbookRepository;
 import ouhk.webProject.exception.AttachmentNotFound;
 import ouhk.webProject.exception.TicketNotFound;
 import ouhk.webProject.model.Attachment;
+import ouhk.webProject.model.Guestbook;
 import ouhk.webProject.model.Ticket;
 import ouhk.webProject.model.bidUser;
 import ouhk.webProject.view.DownloadingView;
@@ -91,7 +93,6 @@ public class TicketController {
             this.description = description;
         }
 
-
         public void setAttachments(List<MultipartFile> attachments) {
             this.attachments = attachments;
         }
@@ -104,23 +105,21 @@ public class TicketController {
             this.price = price;
         }
 
-        
-
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
-    public ModelAndView bidForm(ModelMap model, Principal principal ) {
-        model.addAttribute("owner", principal.getName()) ;
+    public ModelAndView bidForm(ModelMap model, Principal principal) {
+        model.addAttribute("owner", principal.getName());
         return new ModelAndView("addBidding", "bidForm", new Form());
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String bidForm(Form form, Principal principal) throws IOException {
-        
-        long ticketId = ticketService.createTicket(principal.getName(), form.getDescription(), 
-                form.getPrice(),form.getStatus(), form.getWinner(), 
+
+        long ticketId = ticketService.createTicket(principal.getName(), form.getDescription(),
+                form.getPrice(), form.getStatus(), form.getWinner(),
                 form.getAttachments());
-        
+
         return "redirect:/ticket/view/" + ticketId;
     }
 
@@ -133,6 +132,7 @@ public class TicketController {
         }
         model.addAttribute("ticket", ticket);
         model.addAttribute("bids", bidUserEntryRepo.findAll());
+        model.addAttribute("guestBooks",guestbookRepo.findAll());
         return "view";
     }
 
@@ -151,7 +151,6 @@ public class TicketController {
         return new RedirectView("/ticket/list", true);
     }
 
-    
     @RequestMapping(value = "delete/{ticketId}", method = RequestMethod.GET)
     public String deleteTicket(@PathVariable("ticketId") long ticketId)
             throws TicketNotFound {
@@ -168,7 +167,7 @@ public class TicketController {
                 && !principal.getName().equals(ticket.getUserName()))) {
             return new ModelAndView(new RedirectView("/ticket/list", true));
         }
-        
+
         ModelAndView modelAndView = new ModelAndView("edit");
         modelAndView.addObject("ticket", ticket);
 
@@ -194,7 +193,7 @@ public class TicketController {
             return new RedirectView("/ticket/list", true);
         }
 
-        ticketService.updateTicket(ticketId, form.getDescription(),form.getPrice(),form.getStatus(), form.getWinner(),
+        ticketService.updateTicket(ticketId, form.getDescription(), form.getPrice(), form.getStatus(), form.getWinner(),
                 form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }
@@ -208,19 +207,35 @@ public class TicketController {
         ticketService.deleteAttachment(ticketId, name);
         return "redirect:/ticket/edit/" + ticketId;
     }
-    
+
     @RequestMapping(value = "view/{ticketId}/bid", method = RequestMethod.GET)
     public ModelAndView bid(@PathVariable("ticketId") long ticketId, ModelMap model, Principal principal) {
         bidUser bid = new bidUser();
-        return new ModelAndView("bid","bidForm",  bid);
+        return new ModelAndView("bid", "bidForm", bid);
     }
-    
+
     @RequestMapping(value = "view/{ticketId}/bid", method = RequestMethod.POST)
     public View bid(@PathVariable("ticketId") long ticketId, bidUser bid, Principal principal) {
         bid.setItemID(ticketId);
         bid.setUsername(principal.getName());
         bidUserEntryRepo.save(bid);
-        return new RedirectView("/ticket/view/"+ticketId, true);
+        return new RedirectView("/ticket/view/" + ticketId, true);
     }
-     
+
+    @RequestMapping(value = "view/{ticketId}/guestbook", method = RequestMethod.GET)
+    public ModelAndView guestbook(@PathVariable("ticketId") long ticketId, ModelMap model, Principal principal) {
+        Guestbook gbook = new Guestbook();
+        return new ModelAndView("guestBook", "guestBookForm", gbook);
+    }
+
+    @RequestMapping(value = "view/{ticketId}/guestbook", method = RequestMethod.POST)
+    public View guestbook(@PathVariable("ticketId") long ticketId, Guestbook gbook, Principal principal) {
+        gbook.setItemID(ticketId);
+        gbook.setName(principal.getName());
+        Date date = new Date();
+        gbook.setDate(date);
+        guestbookRepo.save(gbook);
+        return new RedirectView("/ticket/view/" + ticketId, true);
+    }
+
 }

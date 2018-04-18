@@ -20,6 +20,7 @@
             </security:authorize>
         </security:authorize>
         [<a href="<c:url value="/ticket/view/${ticket.id}/bid" />">Add Bid</a>]
+        [<a href="<c:url value="/ticket/view/${ticket.id}/guestbook" />">Add Comment</a>]
         <br /><br />
         <h3>Description: <c:out value="${ticket.description}" /></h3><br />
         <h3>Owner: <c:out value="${ticket.userName}" /></h3><br />
@@ -37,7 +38,7 @@
             </c:forEach><br /><br />
         </c:if>
 
-
+        ---------------------------------------------------------
         bid times: ${fn:length(bids)}<br/>
         <c:choose>
             <c:when test="${fn:length(bids) == 0}">
@@ -52,7 +53,21 @@
                 </c:forEach>
             </c:otherwise>
         </c:choose>
-
+        ---------------------------------------------------------
+        Comment times: ${fn:length(guestBooks)}<br/>
+        <c:choose>
+            <c:when test="${fn:length(guestBooks) == 0}">
+                <i>There are no bid in this item.</i>
+            </c:when>
+            <c:otherwise>
+                <c:forEach items="${guestBooks}" var="guestBook">
+                    <c:if test="${ticket.id == guestBook.itemID}">
+                        User: ${guestBook.name}<br/>
+                        Message: ${guestBook.message} (${guestBook.date})<br/>
+                    </c:if>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>
