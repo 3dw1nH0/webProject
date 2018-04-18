@@ -11,13 +11,9 @@
         </form>
 
         <h2>Tickets</h2>
-        
-        <!-- if admin the show-->
         <security:authorize access="hasRole('ADMIN')">    
             <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
         </security:authorize>
-            
-            
         <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br /><br />
 
         <c:choose>
@@ -29,17 +25,15 @@
                     Ticket ${ticket.id}:
                     <a href="<c:url value="/ticket/view/${ticket.id}" />">
                         <c:out value="${ticket.id}" /></a>
-                    (user:<c:out value="${ticket.userName}" />)
+                    (user: <c:out value="${ticket.userName}" />)
                     (description: <c:out value="${ticket.description}" />)
                     (status: <c:out value="${ticket.status}" />)
-                    <security:authorize access="isAuthenticated()">
                     <security:authorize access="hasRole('ADMIN') or 
                                         principal.username=='${ticket.userName}'">
                         [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]
                     </security:authorize>
                     <security:authorize access="hasRole('ADMIN')">            
                         [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
-                    </security:authorize>
                     </security:authorize>
                     <br /><br />
                 </c:forEach>

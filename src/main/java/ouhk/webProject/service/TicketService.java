@@ -9,15 +9,15 @@ import ouhk.webProject.model.Ticket;
 
 public interface TicketService {
 
-    public long createTicket(String userName, String description, 
-            String price, String status, String winner, List<MultipartFile> attachments) throws IOException;
+    public long createTicket(String userName, String description,
+            String status, String winner, String expectedPrice,List<MultipartFile> attachments) throws IOException;
 
     public List<Ticket> getTickets();
 
     public Ticket getTicket(long id);
 
     public void updateTicket(long id, String description,
-            String price, String status, String winner, List<MultipartFile> attachments)
+            String status, String winner, String expectedPrice, List<MultipartFile> attachments)
             throws IOException, TicketNotFound;
 
     public void delete(long id) throws TicketNotFound;

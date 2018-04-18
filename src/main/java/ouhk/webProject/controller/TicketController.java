@@ -50,61 +50,57 @@ public class TicketController {
     public static class Form {
 
         private String userName;
-        private String description, price, status, winner;
+        private String status, winner, description;
+        private String expectedPrice;
         private List<MultipartFile> attachments;
 
         public String getUserName() {
             return userName;
         }
 
-        public String getStatus() {
-            return status;
-        }
-
-        public String getWinner() {
-            return winner;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-      
-
-        public List<MultipartFile> getAttachments() {
-            return attachments;
-        }
-
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String getStatus() {
+            return status;
         }
 
         public void setStatus(String status) {
             this.status = status;
         }
 
+        public String getWinner() {
+            return winner;
+        }
+
         public void setWinner(String winner) {
             this.winner = winner;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         public void setDescription(String description) {
             this.description = description;
         }
 
+       public String getExpectedPrice() {
+            return expectedPrice;
+        }
+
+        public void setExpectedPrice(String expectedPrice) {
+            this.expectedPrice = expectedPrice;
+        }
+
+        public List<MultipartFile> getAttachments() {
+            return attachments;
+        }
 
         public void setAttachments(List<MultipartFile> attachments) {
             this.attachments = attachments;
         }
-
-        public String getPrice() {
-            return price;
-        }
-
-        public void setPrice(String price) {
-            this.price = price;
-        }
-
-        
 
     }
 
@@ -116,11 +112,9 @@ public class TicketController {
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String bidForm(Form form, Principal principal) throws IOException {
-        
-        long ticketId = ticketService.createTicket(principal.getName(), form.getDescription(), 
-                form.getPrice(),form.getStatus(), form.getWinner(), 
+        long ticketId = ticketService.createTicket(principal.getName(),
+                form.getDescription(), form.getExpectedPrice(),form.getStatus(), form.getWinner(), 
                 form.getAttachments());
-        
         return "redirect:/ticket/view/" + ticketId;
     }
 
@@ -174,7 +168,7 @@ public class TicketController {
         Form bidForm = new Form();
         bidForm.setUserName(ticket.getUserName());
         bidForm.setDescription(ticket.getDescription());
-        bidForm.setPrice(ticket.getPrice());
+        bidForm.setExpectedPrice(ticket.getExpectedPrice());
         bidForm.setStatus(ticket.getStatus());
         bidForm.setWinner(ticket.getWinner());
         modelAndView.addObject("bidForm", bidForm);
@@ -193,7 +187,7 @@ public class TicketController {
             return new RedirectView("/ticket/list", true);
         }
 
-        ticketService.updateTicket(ticketId, form.getDescription(),form.getPrice(),form.getStatus(), form.getWinner(),
+        ticketService.updateTicket(ticketId, form.getDescription(),form.getExpectedPrice(),form.getStatus(), form.getWinner(),
                 form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }

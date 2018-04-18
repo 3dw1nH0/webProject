@@ -13,10 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 /**
  *
  * @author Edwin
  */
+
 @Entity
 @Table(name = "ticket")
 public class Ticket implements Serializable {
@@ -28,7 +30,7 @@ public class Ticket implements Serializable {
     @Column(name = "Owner")
     private String userName;
 
-    private String description, price, status, winner;
+    private String description, status, winner, expectedPrice;
 
     @OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,12 +76,12 @@ public class Ticket implements Serializable {
         this.winner = winner;
     }
 
-    public String getPrice() {
-        return price;
+    public String getExpectedPrice() {
+        return expectedPrice;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
+    public void setExpectedPrice(String expectedPrice) {
+        this.expectedPrice = expectedPrice;
     }
 
     public List<Attachment> getAttachments() {

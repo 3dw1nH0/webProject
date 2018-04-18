@@ -21,18 +21,14 @@
         <form:form method="POST" enctype="multipart/form-data" modelAttribute="bidForm">
             <form:label path="userName">Owner: ${owner}</form:label><br/>
             <form:input type="hidden" path="userName"  value="${owner}"/><br/><br/>
-            
             <form:label path="description">Description</form:label><br/>
             <form:input type="text" path="description" /><br/><br/>
-            
-            <form:label path="price">Expected Price</form:label><br/>
-            <form:input type="text" path="price"/><br/><br/>
-            
+            <form:label path="expectedPrice">Expected Price</form:label><br/>
+            <form:input type="text" path="expectedPrice"/><br/><br/>
             <form:label path="status">Status</form:label><br/>
             <form:radiobutton path="status" value="Available" />Available
             <form:radiobutton path="status" value="Ended" />Ended
             <br/><br/>
-            
             <form:label path="winner">Winner</form:label><br/>
             <form:input type="text" path="winner" /><br/><br/>
             <b>Attachments</b><br/>
