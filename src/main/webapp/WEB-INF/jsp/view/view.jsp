@@ -20,6 +20,7 @@
         <br /><br />
         <h3>Description: <c:out value="${ticket.description}" /></h3><br />
         <h3>Owner: <c:out value="${ticket.userName}" /></h3><br />
+        <h3>Price: <c:out value="${ticket.price}"/></h3><br/>
         <h3>Status: <c:out value="${ticket.status}" /></h3><br />
         <h3>Winner: <c:out value="${ticket.winner}" /></h3><br />
         
