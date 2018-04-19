@@ -4,28 +4,20 @@
         <title>Customer Support</title>
     </head>
     <body>
-        <security:authorize access="!isAuthenticated()">
-            <a href="<c:url value="/login"/>"> Login </a>
-        </security:authorize>  
-
-        <security:authorize access="isAuthenticated()">
-
-            <c:url var="logoutUrl" value="/logout"/>
-            <form action="${logoutUrl}" method="post">
-                <input type="submit" value="Log out" />
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            </form>
-
-        </security:authorize>
+        <c:url var="logoutUrl" value="/logout"/>
+        <form action="${logoutUrl}" method="post">
+            <input type="submit" value="Log out" />
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
 
         <h2>Tickets</h2>
-
+        
         <!-- if admin the show-->
         <security:authorize access="hasRole('ADMIN')">    
             <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
         </security:authorize>
-
-
+            
+            
         <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br /><br />
 
         <c:choose>
@@ -42,6 +34,7 @@
                     (status: <c:out value="${ticket.status}" />)
                     <security:authorize access="isAuthenticated()">
 <<<<<<< HEAD
+<<<<<<< HEAD
                         <security:authorize access="hasRole('ADMIN') or 
                                             principal.username=='${ticket.userName}'">
                             [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]          
@@ -56,6 +49,13 @@
                         [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
                     </security:authorize>
 >>>>>>> parent of dba1b82... delete function work
+=======
+                    <security:authorize access="hasRole('ADMIN') or 
+                                        principal.username=='${ticket.userName}'">
+                        [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]          
+                        [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
+                    </security:authorize>
+>>>>>>> parent of 2688977... css to view.jsp 
                     </security:authorize>
                     <br /><br />
                 </c:forEach>
