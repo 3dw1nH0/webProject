@@ -4,20 +4,28 @@
         <title>Customer Support</title>
     </head>
     <body>
-        <c:url var="logoutUrl" value="/logout"/>
-        <form action="${logoutUrl}" method="post">
-            <input type="submit" value="Log out" />
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
+        <security:authorize access="!isAuthenticated()">
+            <a href="<c:url value="/login"/>"> Login </a>
+        </security:authorize>  
+
+        <security:authorize access="isAuthenticated()">
+
+            <c:url var="logoutUrl" value="/logout"/>
+            <form action="${logoutUrl}" method="post">
+                <input type="submit" value="Log out" />
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+
+        </security:authorize>
 
         <h2>Tickets</h2>
-        
+
         <!-- if admin the show-->
         <security:authorize access="hasRole('ADMIN')">    
             <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
         </security:authorize>
-            
-            
+
+
         <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br /><br />
 
         <c:choose>
@@ -33,11 +41,11 @@
                     (description: <c:out value="${ticket.description}" />)
                     (status: <c:out value="${ticket.status}" />)
                     <security:authorize access="isAuthenticated()">
-                    <security:authorize access="hasRole('ADMIN') or 
-                                        principal.username=='${ticket.userName}'">
-                        [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]          
-                        [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
-                    </security:authorize>
+                        <security:authorize access="hasRole('ADMIN') or 
+                                            principal.username=='${ticket.userName}'">
+                            [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]          
+                            [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
+                        </security:authorize>
                     </security:authorize>
                     <br /><br />
                 </c:forEach>
