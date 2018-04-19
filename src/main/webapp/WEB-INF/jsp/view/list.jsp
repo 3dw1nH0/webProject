@@ -41,11 +41,21 @@
                     (description: <c:out value="${ticket.description}" />)
                     (status: <c:out value="${ticket.status}" />)
                     <security:authorize access="isAuthenticated()">
+<<<<<<< HEAD
                         <security:authorize access="hasRole('ADMIN') or 
                                             principal.username=='${ticket.userName}'">
                             [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]          
                             [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
                         </security:authorize>
+=======
+                    <security:authorize access="hasRole('ADMIN') or 
+                                        principal.username=='${ticket.userName}'">
+                        [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]
+                    </security:authorize>
+                    <security:authorize access="hasRole('ADMIN')">            
+                        [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
+                    </security:authorize>
+>>>>>>> parent of dba1b82... delete function work
                     </security:authorize>
                     <br /><br />
                 </c:forEach>

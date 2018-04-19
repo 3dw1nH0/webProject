@@ -34,13 +34,19 @@
             </form>
         </security:authorize> 
 
-        <h2>Ticket #${ticket.id}</h2>
+        <h2>Ticket #${ticket.id}/></h2>
         <security:authorize access="isAuthenticated()">
             <security:authorize access="hasRole('ADMIN') or principal.username=='${ticket.userName}'">            
                 [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]
+<<<<<<< HEAD
                 [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
                 [<a href="<c:url value="/ticket/view/${ticket.id}/bid" />">Add Bid</a>]
                 [<a href="<c:url value="/ticket/view/${ticket.id}/guestbook" />">Add Comment</a>]
+=======
+            </security:authorize>
+            <security:authorize access="hasRole('ADMIN')">            
+                [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
+>>>>>>> parent of dba1b82... delete function work
             </security:authorize>
         </security:authorize>
 
@@ -80,6 +86,7 @@
         </c:otherwise>
     </c:choose>
 
+<<<<<<< HEAD
     <hr>
     <br/><b>Comment</b><br/>
     <c:choose>
@@ -101,4 +108,38 @@
     </c:choose>
     <a href="<c:url value="/ticket" />">Return to list tickets</a>
 </body>
+=======
+        ---------------------------------------------------------
+        bid times: ${fn:length(bids)}<br/>
+        <c:choose>
+            <c:when test="${fn:length(bids) == 0}">
+                <i>There are no bid in this item.</i>
+            </c:when>
+            <c:otherwise>
+                <c:forEach items="${bids}" var="bid">
+                    <c:if test="${ticket.id == bid.itemID}">
+                        User: ${bid.username}<br/>
+                        Price: ${bid.price}<br/>
+                    </c:if>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+        ---------------------------------------------------------
+        Comment times: ${fn:length(guestBooks)}<br/>
+        <c:choose>
+            <c:when test="${fn:length(guestBooks) == 0}">
+                <i>There are no bid in this item.</i>
+            </c:when>
+            <c:otherwise>
+                <c:forEach items="${guestBooks}" var="guestBook">
+                    <c:if test="${ticket.id == guestBook.itemID}">
+                        User: ${guestBook.name}<br/>
+                        Message: ${guestBook.message} (${guestBook.date})<br/>
+                    </c:if>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+        <a href="<c:url value="/ticket" />">Return to list tickets</a>
+    </body>
+>>>>>>> parent of dba1b82... delete function work
 </html>
